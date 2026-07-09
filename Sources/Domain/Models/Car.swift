@@ -24,7 +24,7 @@ extension Car
 {
     var coverURL: URL? {
         let cover = self.media.first(where: { $0.isCover }) ?? self.media.first
-        guard let urlString = cover?.url else { return nil }
-        return URL(string: urlString)
+        guard let path = cover?.url else { return nil }
+        return URL(string: path, relativeTo: AppConfig.baseURL)
     }
 }

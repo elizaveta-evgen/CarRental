@@ -28,15 +28,15 @@ struct Endpoint {
 
 extension Endpoint
 {
-    static let baseURL = URL(string: "https://PASTE_BACKEND_URL_HERE")!
-
     func makeRequest() -> URLRequest? {
-        let fullURL = Self.baseURL.appendingPathComponent(self.path)
-        var components = URLComponents(url: fullURL, resolvingAgainstBaseURL: false)
-        if !self.queryItems.isEmpty {
-            components?.queryItems = self.queryItems
+        guard var components = URLComponents(url: AppConfig.baseURL, resolvingAgainstBaseURL: false) else {
+            return nil
         }
-        guard let url = components?.url else { return nil }
+        components.path = self.path
+        if !self.queryItems.isEmpty {
+            components.queryItems = self.queryItems
+        }
+        guard let url = components.url else { return nil }
         var request = URLRequest(url: url)
         request.httpMethod = self.method.rawValue
         return request
