@@ -9,9 +9,11 @@ import SwiftUI
 
 struct CarDetailsView: View {
     @StateObject private var viewModel: CarDetailsViewModel
+    private let onBook: () -> Void
 
-    init(viewModel: CarDetailsViewModel) {
+    init(viewModel: CarDetailsViewModel, onBook: @escaping () -> Void) {
         self._viewModel = StateObject(wrappedValue: viewModel)
+        self.onBook = onBook
     }
 
     var body: some View {
@@ -100,6 +102,7 @@ private extension CarDetailsView
 
     var bookButton: some View {
         Button {
+            self.onBook()
         } label: {
             Text("Забронировать")
                 .fontWeight(.semibold)

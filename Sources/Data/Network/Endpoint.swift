@@ -18,11 +18,13 @@ struct Endpoint {
     let path: String
     let method: HTTPMethod
     let queryItems: [URLQueryItem]
+    let body: Data?
 
-    init(path: String, method: HTTPMethod = .get, queryItems: [URLQueryItem] = []) {
+    init(path: String, method: HTTPMethod = .get, queryItems: [URLQueryItem] = [], body: Data? = nil) {
         self.path = path
         self.method = method
         self.queryItems = queryItems
+        self.body = body
     }
 }
 
@@ -39,6 +41,10 @@ extension Endpoint
         guard let url = components.url else { return nil }
         var request = URLRequest(url: url)
         request.httpMethod = self.method.rawValue
+        if let body = self.body {
+            request.httpBody = body
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        }
         return request
     }
 }
