@@ -16,11 +16,11 @@ final class AppCoordinatorTests: XCTestCase {
         XCTAssertEqual(coordinator.route, .carList)
     }
 
-    func testMakeCarListViewModelProvidesTitle() {
+    func testMakeCarListViewModelStartsInLoading() {
         let coordinator = AppCoordinator()
 
         let viewModel = coordinator.makeCarListViewModel()
 
-        XCTAssertEqual(viewModel.title, "Аренда машин")
+        XCTAssertEqual(viewModel.state, .loading)
     }
 }
