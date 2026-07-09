@@ -5,7 +5,7 @@
 //  Created by Elizaveta Evgenia on 09.07.2026.
 //
 
-enum Transmission: String, Decodable {
+enum Transmission: String, Decodable, CaseIterable {
     case automatic
     case manual
 
@@ -17,7 +17,7 @@ enum Transmission: String, Decodable {
     }
 }
 
-enum BodyType: String, Decodable {
+enum BodyType: String, Decodable, CaseIterable {
     case sedan
     case suv
     case coupe
@@ -35,7 +35,7 @@ enum BodyType: String, Decodable {
     }
 }
 
-enum CarColor: String, Decodable {
+enum CarColor: String, Decodable, CaseIterable {
     case black
     case white
     case red
@@ -57,7 +57,7 @@ enum CarColor: String, Decodable {
     }
 }
 
-enum Steering: String, Decodable {
+enum Steering: String, Decodable, CaseIterable {
     case left
     case right
 

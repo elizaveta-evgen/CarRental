@@ -8,7 +8,7 @@
 import Foundation
 
 protocol CarsServiceProtocol {
-    func fetchCars() async throws -> [Car]
+    func fetchCars(filter: CarFilter) async throws -> [Car]
 }
 
 final class CarsService: CarsServiceProtocol {
@@ -18,8 +18,8 @@ final class CarsService: CarsServiceProtocol {
         self.networkService = networkService
     }
 
-    func fetchCars() async throws -> [Car] {
-        let endpoint = Endpoint(path: "/api/cars/info")
+    func fetchCars(filter: CarFilter) async throws -> [Car] {
+        let endpoint = Endpoint(path: "/api/cars/info", queryItems: filter.queryItems)
         let response: CarsResponse = try await self.networkService.request(endpoint)
         return response.data
     }
