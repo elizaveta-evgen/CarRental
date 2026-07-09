@@ -26,4 +26,16 @@ final class CarDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(characteristics.first?.label, "Коробка передач")
         XCTAssertEqual(characteristics.first?.value, "Автомат")
     }
+
+    func testTotalForSelectedPeriod() {
+        let calendar = Calendar.current
+        let period = RentalPeriod(
+            startDate: calendar.date(from: DateComponents(year: 2026, month: 8, day: 1))!,
+            endDate: calendar.date(from: DateComponents(year: 2026, month: 8, day: 15))!
+        )
+        let viewModel = CarDetailsViewModel(car: .stub(), period: period)
+
+        XCTAssertEqual(viewModel.rentalDaysText, "Аренда на 15 дней")
+        XCTAssertEqual(viewModel.totalText, "120 000 ₽")
+    }
 }
