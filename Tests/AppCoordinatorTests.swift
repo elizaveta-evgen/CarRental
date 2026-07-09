@@ -23,4 +23,12 @@ final class AppCoordinatorTests: XCTestCase {
 
         XCTAssertEqual(viewModel.state, .loading)
     }
+
+    func testShowCarDetailsPushesScreen() {
+        let coordinator = AppCoordinator()
+
+        coordinator.showCarDetails(.stub())
+
+        XCTAssertEqual(coordinator.path.count, 1)
+    }
 }
