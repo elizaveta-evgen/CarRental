@@ -16,6 +16,6 @@ final class AppCoordinator: ObservableObject {
     }
 
     func makeCarListViewModel() -> CarListViewModel {
-        CarListViewModel()
+        CarListViewModel(carsService: CarsService())
     }
 }

@@ -9,6 +9,21 @@ import Foundation
 
 @MainActor
 final class CarListViewModel: ObservableObject {
-    @Published private(set) var title = "Аренда машин"
-    @Published private(set) var subtitle = "Скоро здесь появится список машин"
+    @Published private(set) var state: CarListState = .loading
+
+    private let carsService: CarsServiceProtocol
+
+    init(carsService: CarsServiceProtocol = CarsService()) {
+        self.carsService = carsService
+    }
+
+    func loadCars() async {
+        self.state = .loading
+        do {
+            let cars = try await self.carsService.fetchCars()
+            self.state = .loaded(cars)
+        } catch {
+            self.state = .failed("Не удалось загрузить машины")
+        }
+    }
 }
