@@ -17,11 +17,23 @@ struct RootView: View {
 
 private extension RootView
 {
-    @ViewBuilder
     var content: some View {
+        NavigationStack(path: self.$coordinator.path) {
+            self.rootScreen
+                .navigationDestination(for: Car.self) { car in
+                    CarDetailsView(viewModel: self.coordinator.makeCarDetailsViewModel(for: car))
+                }
+        }
+    }
+
+    @ViewBuilder
+    var rootScreen: some View {
         switch self.coordinator.route {
         case .carList:
-            CarListView(viewModel: self.coordinator.makeCarListViewModel())
+            CarListView(
+                viewModel: self.coordinator.makeCarListViewModel(),
+                onSelectCar: { self.coordinator.showCarDetails($0) }
+            )
         }
     }
 }

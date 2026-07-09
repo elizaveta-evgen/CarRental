@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Car: Decodable, Identifiable, Equatable {
+struct Car: Decodable, Identifiable, Equatable, Hashable {
     let id: String
     let name: String
     let brand: String
@@ -24,7 +24,6 @@ extension Car
 {
     var coverURL: URL? {
         let cover = self.media.first(where: { $0.isCover }) ?? self.media.first
-        guard let path = cover?.url else { return nil }
-        return URL(string: path, relativeTo: AppConfig.baseURL)
+        return cover?.fullURL
     }
 }

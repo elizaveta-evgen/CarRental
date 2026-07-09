@@ -9,13 +9,16 @@ import SwiftUI
 
 struct CarListView: View {
     @StateObject private var viewModel: CarListViewModel
+    private let onSelectCar: (Car) -> Void
 
-    init(viewModel: CarListViewModel) {
+    init(viewModel: CarListViewModel, onSelectCar: @escaping (Car) -> Void) {
         self._viewModel = StateObject(wrappedValue: viewModel)
+        self.onSelectCar = onSelectCar
     }
 
     var body: some View {
         self.content
+            .navigationTitle("Аренда машины")
             .task {
                 await self.viewModel.loadCars()
             }
@@ -44,19 +47,17 @@ private extension CarListView
     func list(for cars: [Car]) -> some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 24) {
-                self.title
                 ForEach(cars) { car in
-                    CarCardView(car: car)
+                    Button {
+                        self.onSelectCar(car)
+                    } label: {
+                        CarCardView(car: car)
+                    }
+                    .buttonStyle(.plain)
                 }
             }
             .padding()
         }
-    }
-
-    var title: some View {
-        Text("Аренда машины")
-            .font(.largeTitle)
-            .fontWeight(.bold)
     }
 
     func errorView(_ message: String) -> some View {

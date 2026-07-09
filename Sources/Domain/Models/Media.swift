@@ -7,7 +7,14 @@
 
 import Foundation
 
-struct Media: Decodable, Equatable {
+struct Media: Decodable, Equatable, Hashable {
     let url: String
     let isCover: Bool
+}
+
+extension Media
+{
+    var fullURL: URL? {
+        URL(string: self.url, relativeTo: AppConfig.baseURL)
+    }
 }
