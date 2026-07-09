@@ -9,11 +9,13 @@ import SwiftUI
 
 struct CarListView: View {
     @StateObject private var viewModel: CarListViewModel
+    @Binding var rentalPeriod: RentalPeriod
     @State private var showFilters = false
     private let onSelectCar: (Car) -> Void
 
-    init(viewModel: CarListViewModel, onSelectCar: @escaping (Car) -> Void) {
+    init(viewModel: CarListViewModel, rentalPeriod: Binding<RentalPeriod>, onSelectCar: @escaping (Car) -> Void) {
         self._viewModel = StateObject(wrappedValue: viewModel)
+        self._rentalPeriod = rentalPeriod
         self.onSelectCar = onSelectCar
     }
 
@@ -38,9 +40,20 @@ private extension CarListView
 {
     var content: some View {
         VStack(spacing: 0) {
-            self.searchBar
+            self.header
             self.stateContent
         }
+    }
+
+    var header: some View {
+        VStack(spacing: 12) {
+            self.searchBar
+            self.periodRow
+            self.findButton
+        }
+        .padding(.horizontal)
+        .padding(.top, 8)
+        .padding(.bottom, 12)
     }
 
     var searchBar: some View {
@@ -48,8 +61,38 @@ private extension CarListView
             self.searchField
             self.filterButton
         }
-        .padding(.horizontal)
-        .padding(.vertical, 8)
+    }
+
+    var periodRow: some View {
+        HStack(spacing: 12) {
+            self.dateField(title: "Начало аренды", selection: self.$rentalPeriod.startDate)
+            self.dateField(title: "Окончание аренды", selection: self.$rentalPeriod.endDate)
+        }
+    }
+
+    func dateField(title: String, selection: Binding<Date>) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title)
+                .font(.caption)
+                .foregroundColor(.secondary)
+            DatePicker("", selection: selection, displayedComponents: .date)
+                .labelsHidden()
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    var findButton: some View {
+        Button {
+            Task { await self.viewModel.loadCars() }
+        } label: {
+            Text("Найти машину")
+                .fontWeight(.semibold)
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color.black)
+                .foregroundColor(.white)
+                .clipShape(RoundedRectangle(cornerRadius: 16))
+        }
     }
 
     var searchField: some View {

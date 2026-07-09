@@ -35,6 +35,7 @@ private extension RootView
         case .carList:
             CarListView(
                 viewModel: self.coordinator.makeCarListViewModel(),
+                rentalPeriod: self.$coordinator.rentalPeriod,
                 onSelectCar: { self.coordinator.showCarDetails($0) }
             )
         }

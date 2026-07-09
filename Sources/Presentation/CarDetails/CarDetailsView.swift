@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CarDetailsView: View {
     @StateObject private var viewModel: CarDetailsViewModel
+    @State private var selectedPhoto = 0
     private let onBook: () -> Void
 
     init(viewModel: CarDetailsViewModel, onBook: @escaping () -> Void) {
@@ -27,6 +28,7 @@ private extension CarDetailsView
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
                 self.gallery
+                self.thumbnails
                 self.header
                 self.characteristics
                 self.priceBlock
@@ -38,24 +40,55 @@ private extension CarDetailsView
     }
 
     var gallery: some View {
-        TabView {
-            ForEach(self.viewModel.photoURLs, id: \.self) { url in
-                AsyncImage(url: url) { phase in
-                    switch phase {
-                    case let .success(image):
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                    default:
-                        Rectangle()
-                            .fill(Color(.systemGray5))
+        TabView(selection: self.$selectedPhoto) {
+            ForEach(Array(self.viewModel.photoURLs.enumerated()), id: \.offset) { index, url in
+                self.photo(url)
+                    .tag(index)
+            }
+        }
+        .tabViewStyle(.page(indexDisplayMode: .never))
+        .frame(height: 240)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+
+    func photo(_ url: URL) -> some View {
+        AsyncImage(url: url) { phase in
+            switch phase {
+            case let .success(image):
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+            default:
+                Rectangle()
+                    .fill(Color(.systemGray5))
+            }
+        }
+    }
+
+    @ViewBuilder
+    var thumbnails: some View {
+        if self.viewModel.photoURLs.count > 1 {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    ForEach(Array(self.viewModel.photoURLs.enumerated()), id: \.offset) { index, url in
+                        self.thumbnail(url, index: index)
                     }
                 }
             }
         }
-        .tabViewStyle(.page)
-        .frame(height: 240)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+
+    func thumbnail(_ url: URL, index: Int) -> some View {
+        self.photo(url)
+            .frame(width: 72, height: 56)
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+            .overlay {
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(self.selectedPhoto == index ? Color.black : Color.clear, lineWidth: 2)
+            }
+            .onTapGesture {
+                self.selectedPhoto = index
+            }
     }
 
     var header: some View {
@@ -92,9 +125,11 @@ private extension CarDetailsView
     var priceBlock: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Стоимость")
+                .font(.headline)
+            Text("\(self.viewModel.rentalDaysText) · \(self.viewModel.rentalDatesText)")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
-            Text(self.viewModel.priceText)
+            Text("Итого: \(self.viewModel.totalText)")
                 .font(.title2)
                 .fontWeight(.bold)
         }

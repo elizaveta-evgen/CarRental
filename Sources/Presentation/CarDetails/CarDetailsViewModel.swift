@@ -10,9 +10,11 @@ import Foundation
 @MainActor
 final class CarDetailsViewModel: ObservableObject {
     let car: Car
+    let period: RentalPeriod
 
-    init(car: Car) {
+    init(car: Car, period: RentalPeriod = RentalPeriod()) {
         self.car = car
+        self.period = period
     }
 
     var title: String {
@@ -25,6 +27,18 @@ final class CarDetailsViewModel: ObservableObject {
 
     var priceText: String {
         PriceFormatter.rubles(self.car.price)
+    }
+
+    var rentalDaysText: String {
+        "Аренда на \(self.period.daysText)"
+    }
+
+    var rentalDatesText: String {
+        self.period.datesText
+    }
+
+    var totalText: String {
+        PriceFormatter.rubles(self.car.price * self.period.days)
     }
 
     var photoURLs: [URL] {

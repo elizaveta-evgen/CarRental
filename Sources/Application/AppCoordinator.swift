@@ -11,6 +11,7 @@ import SwiftUI
 final class AppCoordinator: ObservableObject {
     @Published private(set) var route: AppRoute
     @Published var path = NavigationPath()
+    @Published var rentalPeriod = RentalPeriod()
 
     private(set) var bookingViewModel: BookingViewModel?
 
@@ -23,7 +24,7 @@ final class AppCoordinator: ObservableObject {
     }
 
     func startBooking(for car: Car) {
-        self.bookingViewModel = BookingViewModel(car: car)
+        self.bookingViewModel = BookingViewModel(car: car, period: self.rentalPeriod)
         self.path.append(BookingStep.dates)
     }
 
@@ -49,6 +50,6 @@ final class AppCoordinator: ObservableObject {
     }
 
     func makeCarDetailsViewModel(for car: Car) -> CarDetailsViewModel {
-        CarDetailsViewModel(car: car)
+        CarDetailsViewModel(car: car, period: self.rentalPeriod)
     }
 }

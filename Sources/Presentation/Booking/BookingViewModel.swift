@@ -36,14 +36,12 @@ final class BookingViewModel: ObservableObject {
 
     private let rentService: RentServiceProtocol
 
-    init(car: Car, rentService: RentServiceProtocol = RentService()) {
+    init(car: Car, period: RentalPeriod = RentalPeriod(), rentService: RentServiceProtocol = RentService()) {
         self.car = car
         self.rentService = rentService
-        let today = Date()
-        let calendar = Calendar.current
-        self.startDate = today
-        self.endDate = calendar.date(byAdding: .day, value: 7, to: today) ?? today
-        self.birthDate = calendar.date(from: DateComponents(year: 2000, month: 1, day: 1)) ?? today
+        self.startDate = period.startDate
+        self.endDate = period.endDate
+        self.birthDate = Calendar.current.date(from: DateComponents(year: 2000, month: 1, day: 1)) ?? Date()
     }
 
     func submit() async {
@@ -60,11 +58,7 @@ final class BookingViewModel: ObservableObject {
 extension BookingViewModel
 {
     var rentDays: Int {
-        let calendar = Calendar.current
-        let start = calendar.startOfDay(for: self.startDate)
-        let end = calendar.startOfDay(for: self.endDate)
-        let days = calendar.dateComponents([.day], from: start, to: end).day ?? 0
-        return max(1, days + 1)
+        self.period.days
     }
 
     var estimatedTotalText: String {
@@ -72,7 +66,7 @@ extension BookingViewModel
     }
 
     var datesText: String {
-        "\(self.dateFormatter.string(from: self.startDate)) — \(self.dateFormatter.string(from: self.endDate))"
+        self.period.datesText
     }
 
     var fullName: String {
@@ -113,11 +107,8 @@ extension BookingViewModel
 
 private extension BookingViewModel
 {
-    var dateFormatter: DateFormatter {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ru_RU")
-        formatter.dateFormat = "d MMMM yyyy"
-        return formatter
+    var period: RentalPeriod {
+        RentalPeriod(startDate: self.startDate, endDate: self.endDate)
     }
 
     var birthDateString: String {
