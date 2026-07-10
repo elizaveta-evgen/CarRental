@@ -51,6 +51,7 @@ private extension FiltersView
                 }
                 .padding()
             }
+            .scrollDismissesKeyboard(.immediately)
             .navigationTitle("Фильтры")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

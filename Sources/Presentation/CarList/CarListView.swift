@@ -54,6 +54,7 @@ private extension CarListView
         .padding(.horizontal)
         .padding(.top, 8)
         .padding(.bottom, 12)
+        .hideKeyboardOnTap()
     }
 
     var searchBar: some View {
@@ -164,6 +165,7 @@ private extension CarListView
                 }
                 .padding()
             }
+            .scrollDismissesKeyboard(.immediately)
         }
     }
 

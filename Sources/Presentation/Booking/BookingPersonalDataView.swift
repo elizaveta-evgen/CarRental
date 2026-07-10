@@ -33,6 +33,8 @@ private extension BookingPersonalDataView
             }
             .padding()
         }
+        .scrollDismissesKeyboard(.immediately)
+        .hideKeyboardOnTap()
         .navigationTitle("Ваши данные")
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom) {

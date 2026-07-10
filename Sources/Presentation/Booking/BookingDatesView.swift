@@ -28,6 +28,8 @@ private extension BookingDatesView
             }
             .padding()
         }
+        .scrollDismissesKeyboard(.immediately)
+        .hideKeyboardOnTap()
         .navigationTitle("Бронирование машины")
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom) {
