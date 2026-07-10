@@ -15,6 +15,19 @@ struct Media: Decodable, Equatable, Hashable {
 extension Media
 {
     var fullURL: URL? {
-        URL(string: self.url, relativeTo: AppConfig.baseURL)
+        if let absoluteURL = URL(string: self.url), absoluteURL.scheme != nil {
+            return absoluteURL
+        }
+
+        let normalizedPath: String
+        if self.url.hasPrefix("/api/") {
+            normalizedPath = self.url
+        } else if self.url.hasPrefix("/") {
+            normalizedPath = "/api" + self.url
+        } else {
+            normalizedPath = "/api/" + self.url
+        }
+
+        return URL(string: normalizedPath, relativeTo: AppConfig.baseURL)
     }
 }
