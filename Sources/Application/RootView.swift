@@ -18,6 +18,23 @@ struct RootView: View {
 private extension RootView
 {
     var content: some View {
+        TabView(selection: self.$coordinator.selectedTab) {
+            self.rentTab
+                .tabItem { Label(AppTab.rent.title, systemImage: AppTab.rent.icon) }
+                .tag(AppTab.rent)
+
+            HistoryPlaceholderView()
+                .tabItem { Label(AppTab.history.title, systemImage: AppTab.history.icon) }
+                .tag(AppTab.history)
+
+            ProfilePlaceholderView()
+                .tabItem { Label(AppTab.profile.title, systemImage: AppTab.profile.icon) }
+                .tag(AppTab.profile)
+        }
+        .tint(.blue)
+    }
+
+    var rentTab: some View {
         NavigationStack(path: self.$coordinator.path) {
             self.rootScreen
                 .navigationDestination(for: Car.self) { car in
@@ -51,16 +68,22 @@ private extension RootView
     @ViewBuilder
     func bookingStep(_ step: BookingStep) -> some View {
         if let viewModel = self.coordinator.bookingViewModel {
-            switch step {
-            case .dates:
-                BookingDatesView(viewModel: viewModel, onContinue: { self.coordinator.goToPersonalData() })
-            case .personalData:
-                BookingPersonalDataView(viewModel: viewModel, onContinue: { self.coordinator.goToReview() })
-            case .review:
-                BookingReviewView(viewModel: viewModel, onBooked: { self.coordinator.goToConfirmation() })
-            case .confirmation:
-                BookingConfirmationView(viewModel: viewModel, onFinish: { self.coordinator.finishBooking() })
-            }
+            self.bookingScreen(step, viewModel: viewModel)
+                .toolbar(.hidden, for: .tabBar)
+        }
+    }
+
+    @ViewBuilder
+    func bookingScreen(_ step: BookingStep, viewModel: BookingViewModel) -> some View {
+        switch step {
+        case .dates:
+            BookingDatesView(viewModel: viewModel, onContinue: { self.coordinator.goToPersonalData() })
+        case .personalData:
+            BookingPersonalDataView(viewModel: viewModel, onContinue: { self.coordinator.goToReview() })
+        case .review:
+            BookingReviewView(viewModel: viewModel, onBooked: { self.coordinator.goToConfirmation() })
+        case .confirmation:
+            BookingConfirmationView(viewModel: viewModel, onFinish: { self.coordinator.finishBooking() })
         }
     }
 }

@@ -10,6 +10,7 @@ import SwiftUI
 @MainActor
 final class AppCoordinator: ObservableObject {
     @Published private(set) var route: AppRoute
+    @Published var selectedTab: AppTab = .rent
     @Published var path = NavigationPath()
     @Published var rentalPeriod = RentalPeriod()
 
